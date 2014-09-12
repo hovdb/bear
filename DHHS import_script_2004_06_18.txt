@@ -1,0 +1,102 @@
+dim objDSE
+dim strDefaultDN
+dim StrOU
+
+Set fs = CreateObject("Scripting.FileSystemObject")
+'Specify source location of files and file or file type to be copied. Then
+'specify the target location of the files
+fs.CopyFile "X:\DHHSS3.csv","C:\users.txt",True
+
+WScript.Sleep 15000 
+'WScript.echo "Starting!"
+
+Set objDSE = GetObject("LDAP://rootDSE")
+strDefaultDN = objDSE.Get("defaultNamingContext")
+
+'strOU = InputBox("Enter the name of the OU where you want the contacts created." & _
+'	vbCrLf & "Remember to save the import file as users.txt to the C:\ directory   (C:\users.txt)","Enter OU Name", "OU Name")
+
+strTarget = "LDAP://OU=dhhscontacts,DC=dihs,DC=local"
+'wscript.echo "All Contacts Will Be Created In the Following OU:" & vbCrLf & strTarget
+strContainer = strTarget
+Set oFSO = CreateObject("scripting.filesystemobject")
+
+'save the comma delimited file under C:\ and call it users.txt
+
+Set oTF = oFSO.OpenTextFile("C:\users.txt", 1)
+Do While oTF.AtEndOfStream <> True
+sLine = oTF.ReadLine
+
+'splitting the line on the commas to create an array
+
+aLine = split(sline, ",",-1,1)
+
+sLast = aLine(0)
+sFirst = aline(1)
+sInitial = aline(2)
+
+'Added the following line - Kathie
+sAgency = aline(6)
+
+sAddress = aLine(10)
+sDescription = aLine(7)
+sCity = aLine(12)
+sPhone = aLine(14)
+sFax = aLine(15)
+sCN = aLine(19)
+sEmail = aLine(19)
+
+'If Statement added - Kathie
+if sAgency="/DOA/HR/DS" then
+else
+
+'On Error Resume Next
+
+Set obj = GetObject(strContainer)
+Set usr = obj.create("contact", "CN=" & sCN)
+usr.put "givenName",sFirst
+usr.put "sn",sLast
+usr.put "displayName",sLast & ", " & SFirst & " " & sInitial
+usr.put "mail",sEmail
+if sInitial = "" then
+usr.put "initials"," "
+else
+usr.put "initials",sInitial
+end if
+if sDescription = "" then
+usr.put "description"," "
+else
+usr.put "description",sDescription
+end if
+if sPhone = "" then
+usr.put "telephoneNumber"," "
+else
+usr.put "telephoneNumber",sPhone
+end if
+if sFax = "" then
+usr.put "facsimileTelephoneNumber"," "
+else
+usr.put "facsimileTelephoneNumber",sFax
+end if
+if sAddress = "" then
+usr.put "streetAddress"," "
+else
+usr.put "streetAddress",sAddress
+end if
+if sCity = "" then
+usr.put "l"," "
+else
+usr.put "l",sCity
+end if
+usr.put "internetEncoding","1310720"
+usr.put "mailNickname", sEmail
+usr.put "mAPIRecipient","FALSE"
+usr.put "targetAddress","SMTP:" & sEmail
+usr.put "extensionAttribute10","DHS"
+usr.put "legacyExchangeDN","/o=USPHS/ou=First Administrative Group/cn=Recipients/cn=" & sCN
+
+usr.setinfo
+
+end if
+
+Loop
