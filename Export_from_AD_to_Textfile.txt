@@ -1,4 +1,6 @@
 'Global variables
+
+
 Dim oContainer
 Dim OutPutFile
 Dim FileSystem
@@ -6,7 +8,7 @@ Dim FileSystem
 'Initialize global variables
 Set FileSystem = WScript.CreateObject("Scripting.FileSystemObject")
 Set OutPutFile = FileSystem.CreateTextFile("Dyonyx.txt", True)
-Set oContainer =GetObject("LDAP://DC=dyonyx,DC=local")
+Set oContainer =GetObject("LDAP://DC=dnyx,DC=local")
 
 'Enumerate Container
 EnumerateUsers oContainer
