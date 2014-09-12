@@ -1,0 +1,37 @@
+'Global variables
+Dim oContainer
+Dim OutPutFile
+Dim FileSystem
+
+'Initialize global variables
+Set FileSystem = WScript.CreateObject("Scripting.FileSystemObject")
+Set OutPutFile = FileSystem.CreateTextFile("Dyonyx.txt", True)
+Set oContainer =GetObject("LDAP://DC=dyonyx,DC=local")
+
+'Enumerate Container
+EnumerateUsers oContainer
+
+'Clean up
+OutPutFile.Close
+Set FileSystem = Nothing
+Set oContainer = Nothing
+
+WScript.Echo "Finished"
+WScript.Quit(0)
+Sub EnumerateUsers(oCont)
+Dim oUser
+For Each oUser In oCont
+Select Case LCase(oUser.Class)
+Case "user"
+
+If 1=1 Then
+OutPutFile.WriteLine oUser.givenname & "," & oUser.sn & "," & oUser.initials & "," & oUser.mail & "," & oUser.physicalDeliveryOfficeName
+End If
+
+Case "organizationalunit" , "container"
+
+EnumerateUsers oUser
+End Select
+'OutPutFile.WriteLine
+Next
+End Sub
