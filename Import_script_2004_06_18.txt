@@ -5,7 +5,7 @@ dim StrOU
 Set fs = CreateObject("Scripting.FileSystemObject")
 'Specify source location of files and file or file type to be copied. Then
 'specify the target location of the files
-fs.CopyFile "X:\DHHSS3.csv","C:\users.txt",True
+fs.CopyFile "X:\HSS3.csv","C:\users.txt",True
 
 WScript.Sleep 15000 
 'WScript.echo "Starting!"
@@ -16,7 +16,7 @@ strDefaultDN = objDSE.Get("defaultNamingContext")
 'strOU = InputBox("Enter the name of the OU where you want the contacts created." & _
 '	vbCrLf & "Remember to save the import file as users.txt to the C:\ directory   (C:\users.txt)","Enter OU Name", "OU Name")
 
-strTarget = "LDAP://OU=dhhscontacts,DC=dihs,DC=local"
+strTarget = "LDAP://OU=hscontacts,DC=austin,DC=local"
 'wscript.echo "All Contacts Will Be Created In the Following OU:" & vbCrLf & strTarget
 strContainer = strTarget
 Set oFSO = CreateObject("scripting.filesystemobject")
@@ -47,7 +47,7 @@ sCN = aLine(19)
 sEmail = aLine(19)
 
 'If Statement added - Kathie
-if sAgency="/DOA/HR/DS" then
+if sAgency="/QA/DEPT" then
 else
 
 'On Error Resume Next
@@ -93,7 +93,7 @@ usr.put "mailNickname", sEmail
 usr.put "mAPIRecipient","FALSE"
 usr.put "targetAddress","SMTP:" & sEmail
 usr.put "extensionAttribute10","DHS"
-usr.put "legacyExchangeDN","/o=USPHS/ou=First Administrative Group/cn=Recipients/cn=" & sCN
+usr.put "legacyExchangeDN","/o=QADEPT/ou=First Administrative Group/cn=Recipients/cn=" & sCN
 
 usr.setinfo
 
